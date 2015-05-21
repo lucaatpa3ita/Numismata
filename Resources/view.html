@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Numismata</title>
+	<link rel="stylesheet" href="app://css/bootstrap.min.css">
+	<link rel="stylesheet" href="app://css/style.css">
+	<script src="app://js/jquery.min.js"></script>
+	<script src="app://js/bootstrap.min.js"></script>
+	<script>
+	$(document).ready(function(){
+		//Open the database
+		var db = Ti.Database.openFile(Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(), 'coins.db'));   
+		
+		//If the coins tabled does not exist, create it
+		db.execute("CREATE TABLE IF NOT EXISTS coins(id TEXT, state TEXT)");
+		
+		//Fetch rows
+		var rows = db.execute("SELECT * FROM coins");
+	
+		//Append coins to table
+		while (rows.isValidRow()) {
+			$('#data-id').text(rows.fieldByName('id'));
+			$('#data-state').text(rows.fieldByName('state'));
+			document.title = rows.fieldByName('id');
+			rows.next();    
+		}
+	});
+	</script>
+</head>
+<body>
+	<div class="container-fluid" style="text-align: center;">
+		<div class="row">
+			<div class="col-sm-6 col-sm-offset-3">
+				<a class="btn btn-primary" href="app://index.html">Return to List</a>
+				<a class="btn btn-warning" href="app://index.html">Edit</a>
+				<a class="btn btn-danger" href="app://index.html">Delete</a>
+				<div class="panel panel-default">
+				<table id="coin-data" class="table table-striped table-bordered">
+					<tbody>
+						<tr class="info"><th id="data-id" colspan="2" style="text-align: center;"></th></tr>
+						<tr><th>State</th><td id="data-state"></td></tr>
+						<tr><th>Period</th><td id="data-per"></td></tr>
+						<tr><th>Issuer</th><td id="data-iss"></td></tr>
+						<tr><th>Denomination</th><td id="data-denom"></td></tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+<script>
+//Close the db
+rows.close();
+db.close();
+</script>
+</body>
+</html>

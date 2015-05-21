@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Numismata</title>
+	<link rel="stylesheet" href="app://css/bootstrap.min.css">
+	<link rel="stylesheet" href="app://css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="app://css/style.css">
+	<script src="app://js/jquery.min.js"></script>
+	<script src="app://js/bootstrap.min.js"></script>
+	<script>
+	$(document).ready(function(){
+		//Open the database
+		var db = Ti.Database.openFile(Ti.Filesystem.getFile(Ti.Filesystem.getApplicationDataDirectory(), 'coins.db'));   
+		
+		//If the coins tabled does not exist, create it
+		db.execute("CREATE TABLE IF NOT EXISTS coins(id TEXT, state TEXT)");
+		
+		//Fetch rows
+		var rows = db.execute("SELECT * FROM coins");
+	
+		//Append coins to table
+		while (rows.isValidRow()) {
+			$('#coin-list > tbody:last').append('<tr><th><a href="app://view.html?id='+rows.fieldByName('id')+'">'+rows.fieldByName('id')+'</a></th><td>'+rows.fieldByName('state')+'</td></tr>');
+			rows.next();    
+		}
+	});
+	</script>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-12">
+				<table id="coin-list" class="table table-striped table-hover">
+					<thead>
+						<tr><th>ID</th><th>State</th><th>Period</th><th>Issuer</th><th>Denomination</th></tr>
+					</thead>
+					<tbody>						
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+<script>
+//Close the db
+rows.close();
+db.close();
+</script>
+</body>
+</html>
